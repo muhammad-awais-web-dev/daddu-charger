@@ -190,57 +190,6 @@ export default function Home() {
       <div className="absolute top-1/3 right-1/4 w-96 h-96 bg-orange-600/10 rounded-full blur-[150px] pointer-events-none" />
       <div className="absolute bottom-10 left-10 w-80 h-80 bg-yellow-500/5 rounded-full blur-[100px] pointer-events-none" />
 
-      {/* Header */}
-      <header className="border-b border-white/5 bg-black/40 backdrop-blur-md sticky top-0 z-30">
-        <div className="max-w-7xl mx-auto px-6 py-4 flex flex-col md:flex-row md:items-center justify-between gap-4">
-          <div className="flex items-center gap-3">
-            <div className="p-2.5 bg-gradient-to-br from-amber-500 to-orange-600 rounded-xl shadow-lg shadow-orange-500/10">
-              <svg className="w-6 h-6 text-black" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
-              </svg>
-            </div>
-            <div>
-              <h1 className="text-xl font-bold tracking-tight bg-gradient-to-r from-amber-400 via-orange-400 to-yellow-500 bg-clip-text text-transparent">
-                Daddu Charger Explorer
-              </h1>
-              <p className="text-xs text-gray-400 font-mono">Shopify JSON API Client Layer</p>
-            </div>
-          </div>
-
-          <div className="flex items-center gap-4 flex-wrap">
-            {/* Transition Navigation Links */}
-            <div className="flex items-center gap-2">
-              <TransitionLink
-                href="/page-one"
-                loaderText="Loading Page One..."
-                className="text-xs font-semibold text-gray-300 hover:text-white bg-white/5 hover:bg-white/10 px-3 py-1.5 rounded-lg border border-white/10 transition-colors"
-              >
-                Page One
-              </TransitionLink>
-              <TransitionLink
-                href="/page-two"
-                loaderText="Initializing Deferred Route..."
-                className="text-xs font-semibold text-gray-300 hover:text-white bg-white/5 hover:bg-white/10 px-3 py-1.5 rounded-lg border border-white/10 transition-colors"
-              >
-                Page Two (Delayed Load)
-              </TransitionLink>
-            </div>
-
-            <div className="flex items-center gap-2 bg-white/5 border border-white/10 rounded-lg px-3 py-1.5 max-w-sm overflow-hidden text-ellipsis">
-              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-              <span className="text-xs text-gray-400 font-mono">Connected Store:</span>
-              <a 
-                href={storeUrl}
-                target="_blank" 
-                rel="noopener noreferrer" 
-                className="text-xs font-semibold text-amber-400 hover:underline hover:text-amber-300 transition-colors whitespace-nowrap"
-              >
-                {storeUrl.replace("https://", "")}
-              </a>
-            </div>
-          </div>
-        </div>
-      </header>
 
       {/* Main Container */}
       <main className="flex-1 max-w-7xl w-full mx-auto px-6 py-8 flex flex-col lg:flex-row gap-8 relative z-10">
@@ -323,7 +272,43 @@ export default function Home() {
         </aside>
 
         {/* Tab Content Areas */}
-        <section className="flex-1 min-w-0">
+        <section className="flex-1 min-w-0 space-y-6">
+          
+          {/* Dashboard Info Header */}
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white/[0.01] border border-white/5 rounded-2xl p-4">
+            <div>
+              <h1 className="text-lg font-bold text-white">Daddu Charger Explorer</h1>
+              <p className="text-xs text-gray-400 font-mono">Shopify JSON API Client Layer</p>
+            </div>
+            
+            <div className="flex items-center gap-3 flex-wrap">
+              <TransitionLink
+                href="/page-one"
+                loaderText="Loading Page One..."
+                className="text-xs font-semibold text-gray-300 hover:text-white bg-white/5 hover:bg-white/10 px-3 py-1.5 rounded-lg border border-white/10 transition-colors"
+              >
+                Page One
+              </TransitionLink>
+              <TransitionLink
+                href="/page-two"
+                loaderText="Initializing Deferred Route..."
+                className="text-xs font-semibold text-gray-300 hover:text-white bg-white/5 hover:bg-white/10 px-3 py-1.5 rounded-lg border border-white/10 transition-colors"
+              >
+                Page Two
+              </TransitionLink>
+              <div className="flex items-center gap-2 bg-white/5 border border-white/10 rounded-lg px-3 py-1.5">
+                <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                <a 
+                  href={storeUrl}
+                  target="_blank" 
+                  rel="noopener noreferrer" 
+                  className="text-xs font-semibold text-amber-400 hover:underline hover:text-amber-300 transition-colors whitespace-nowrap"
+                >
+                  {storeUrl.replace("https://", "")}
+                </a>
+              </div>
+            </div>
+          </div>
           
           {/* TAB: DASHBOARD */}
           {activeTab === "dashboard" && (
