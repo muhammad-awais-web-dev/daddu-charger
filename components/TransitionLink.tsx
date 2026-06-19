@@ -7,14 +7,15 @@ interface TransitionLinkProps {
   href: string;
   children: React.ReactNode;
   className?: string;
+  loaderText?: string;
 }
 
-export function TransitionLink({ href, children, className }: TransitionLinkProps) {
+export function TransitionLink({ href, children, className, loaderText }: TransitionLinkProps) {
   const { startTransition } = useTransition();
 
   const handleClick = (e: React.MouseEvent) => {
     e.preventDefault();
-    startTransition(href);
+    startTransition(href, loaderText);
   };
 
   return (
