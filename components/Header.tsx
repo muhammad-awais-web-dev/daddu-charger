@@ -135,7 +135,7 @@ export function Header() {
                 key={link.name}
                 href={link.href}
                 loaderText={`Navigating to ${link.name}...`}
-                className="text-xs font-semibold text-neutral-400 hover:text-white transition-colors py-1.5 px-3 rounded-lg cursor-pointer"
+                className="text-xs font-semibold text-neutral-400 hover:text-accent-gold transition-colors py-1.5 px-3 rounded-lg cursor-pointer"
               >
                 {link.name}
               </TransitionLink>
@@ -314,7 +314,7 @@ export function Header() {
                     key={link.name}
                     href={link.href}
                     loaderText={`Navigating to ${link.name}...`}
-                    className="text-sm font-semibold text-neutral-300 hover:text-white transition-colors"
+                    className="text-sm font-semibold text-neutral-300 hover:text-accent-gold transition-colors"
                   >
                     {link.name}
                   </TransitionLink>

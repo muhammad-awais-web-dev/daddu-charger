@@ -39,6 +39,11 @@ export function TransitionProvider({ children }: { children: React.ReactNode }) 
     const tl = gsap.timeline({
       onComplete: () => {
         router.push(href);
+        const targetPath = href.split("?")[0].split("#")[0];
+        const currentPath = window.location.pathname;
+        if (currentPath === targetPath) {
+          finishTransition();
+        }
       },
     });
 
@@ -106,11 +111,11 @@ export function TransitionProvider({ children }: { children: React.ReactNode }) 
         style={{ transform: "translateY(100%)" }}
       >
         <div className="w-full h-full flex flex-col items-center justify-center gap-4 text-black">
-          <div className="stair absolute z-10  top-0 w-full h-1/5 bg-[#fff]" ></div>
-          <div className="stair absolute z-10  top-1/5 w-full h-1/5 bg-[#eee]" ></div>
-          <div className="stair absolute z-10  top-2/5 w-full h-1/5 bg-[#ddd]" ></div>
-          <div className="stair absolute z-10  top-3/5 w-full h-1/5 bg-[#ccc]" ></div>
-          <div className="stair absolute z-10  top-4/5 w-full h-1/5 bg-[#bbb]" ></div>
+          <div className="stair absolute z-10  top-0 w-full h-1/5 bg-[var(--stair-1)]" ></div>
+          <div className="stair absolute z-10  top-1/5 w-full h-1/5 bg-[var(--stair-2)]" ></div>
+          <div className="stair absolute z-10  top-2/5 w-full h-1/5 bg-[var(--stair-3)]" ></div>
+          <div className="stair absolute z-10  top-3/5 w-full h-1/5 bg-[var(--stair-4)]" ></div>
+          <div className="stair absolute z-10  top-4/5 w-full h-1/5 bg-[var(--stair-5)]" ></div>
           <div ref={logoContainerRef} className="z-20 flex flex-col items-center justify-center gap-4">
             <div className="p-3 bg-black rounded-full shadow-2xl animate-pulse">
               {/* <svg className="w-10 h-10 text-amber-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
