@@ -30,8 +30,9 @@ export function ProductCard({
 
   // Formatting currency
   const formatPrice = (val: string | number) => {
-    if (typeof val === "number") {
-      return `Rs. ${val.toLocaleString()}`;
+    const num = typeof val === "string" ? parseFloat(val) : val;
+    if (!isNaN(num)) {
+      return `Rs. ${num.toLocaleString()}`;
     }
     return val;
   };

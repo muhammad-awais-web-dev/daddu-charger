@@ -23,7 +23,7 @@ export function CategoryCard({ name, image, href, itemCount }: CategoryCardProps
             alt={name}
             fill
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-            className="object-cover object-center transition-transform duration-500 group-hover:scale-105"
+            className="object-contain bg-white p-6 object-center transition-transform duration-500 group-hover:scale-105"
           />
           {/* Vignette Overlay */}
           <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-black/10 opacity-70 transition-opacity duration-300 group-hover:opacity-85" />

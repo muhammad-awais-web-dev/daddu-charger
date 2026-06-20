@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useTransition } from "@/components/TransitionContext";
 import { TransitionLink } from "@/components/TransitionLink";
 import AnimatedRays from "@/components/ui/animated-rays";
+import { ImageTrail } from "@/components/ui/image-trail";
 import { Button } from "@/components/ui/button";
 import { CategoryCarousel } from "@/components/CategoryCarousel";
 import { ProductGrid } from "@/components/ProductGrid";
@@ -112,19 +113,30 @@ export default function Home() {
 
   return (
     <main className="dark w-full flex-1 flex flex-col bg-background text-foreground relative">
-      <AnimatedRays
-        className="flex-1 min-h-[calc(100vh-6rem)]"
-        headline="Welcome to Daddu Charger"
-        subtext="Powering Your Gaming Experience. We deliver top-tier, high-performance custom-built gaming PCs and premium accessories crafted in Rawalpindi, Pakistan, designed to elevate your gameplay to the next level."
+      <ImageTrail
+        images={categories.filter((c) => c.image !== "/DadduCharger.svg").map((c) => c.image)}
+        threshold={74}
+        minDelay={45}
+        duration={1100}
+        maxItems={9}
+        rotationRange={34}
+        imageClassName="w-32 rounded-md md:w-40 border border-neutral-800 shadow-xl bg-white object-contain p-2"
+        className="w-full flex-1 flex flex-col relative z-20"
       >
-        <div className="flex items-center justify-center gap-4 mt-4">
-          <TransitionLink href="/page-one">
-            <Button size="lg" className="font-semibold px-8 cursor-pointer shadow-lg hover:scale-105 transition-transform duration-200">
-              Explore Store
-            </Button>
-          </TransitionLink>
-        </div>
-      </AnimatedRays>
+        <AnimatedRays
+          className="flex-1 min-h-[calc(100vh-6rem)]"
+          headline="Welcome to Daddu Charger"
+          subtext="Powering Your Gaming Experience. We deliver top-tier, high-performance custom-built gaming PCs and premium accessories crafted in Rawalpindi, Pakistan, designed to elevate your gameplay to the next level."
+        >
+          <div className="flex items-center justify-center gap-4 mt-4">
+            <TransitionLink href="/page-one">
+              <Button size="lg" className="font-semibold px-8 cursor-pointer shadow-lg hover:scale-105 transition-transform duration-200">
+                Explore Store
+              </Button>
+            </TransitionLink>
+          </div>
+        </AnimatedRays>
+      </ImageTrail>
 
       {/* Homepage Content Sections */}
       <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 space-y-20 relative z-10">
