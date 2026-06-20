@@ -1,5 +1,5 @@
 import { NextRequest } from 'next/server';
-import { getShopifyCollection } from '@/lib/shopify';
+import { getShopifyCollection, getShopifyCollectionProducts } from '@/lib/shopify';
 
 export async function GET(
   request: NextRequest,
@@ -9,8 +9,21 @@ export async function GET(
   try {
     const { handle } = await params;
     resolvedHandle = handle;
-    const data = await getShopifyCollection(handle);
-    return Response.json(data);
+    
+    const [collectionData, productsData] = await Promise.all([
+      getShopifyCollection(handle),
+      getShopifyCollectionProducts(handle).catch((err) => {
+        console.warn(`Failed to fetch products for collection ${handle}:`, err);
+        return { products: [] };
+      })
+    ]);
+
+    const collection = {
+      ...collectionData.collection,
+      products: productsData.products || []
+    };
+
+    return Response.json({ collection });
   } catch (error: any) {
     console.error(`Error fetching collection ${resolvedHandle || 'unknown'} from Shopify API:`, error);
     return Response.json(
