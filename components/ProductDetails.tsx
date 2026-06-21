@@ -2,9 +2,11 @@
 
 import React, { useState } from "react";
 import Image from "next/image";
-import { ShoppingCart, CheckCircle, ChevronRight } from "lucide-react";
+import { ShoppingCart, CheckCircle, Heart } from "lucide-react";
 import { ShopifyProduct, ShopifyVariant } from "@/lib/shopify";
 import { Button } from "@/components/ui/button";
+import { useCart } from "@/components/CartContext";
+import { useWishlist } from "@/components/WishlistContext";
 
 interface ProductDetailsProps {
   product: ShopifyProduct;
@@ -24,10 +26,45 @@ export function ProductDetails({ product }: ProductDetailsProps) {
   const [quantity, setQuantity] = useState(1);
   const [addedToCart, setAddedToCart] = useState(false);
 
+  const { addToCart, setIsCartOpen } = useCart();
+  const { addToWishlist, removeFromWishlist, isInWishlist } = useWishlist();
+
   const handleAddToCart = () => {
-    // Stub implementation for now
+    if (!selectedVariant) return;
+    
+    addToCart({
+      variantId: selectedVariant.id.toString(),
+      productId: product.id.toString(),
+      handle: product.handle,
+      title: product.title,
+      variantTitle: selectedVariant.title,
+      price: currentPrice,
+      image: selectedImage,
+      quantity,
+    });
+    
     setAddedToCart(true);
-    setTimeout(() => setAddedToCart(false), 3000);
+    setTimeout(() => {
+      setAddedToCart(false);
+      // Optional: Open cart drawer
+      setIsCartOpen(true);
+    }, 1500);
+  };
+
+  const inWishlist = isInWishlist(product.id.toString());
+  
+  const handleToggleWishlist = () => {
+    if (inWishlist) {
+      removeFromWishlist(product.id.toString());
+    } else {
+      addToWishlist({
+        productId: product.id.toString(),
+        handle: product.handle,
+        title: product.title,
+        price: currentPrice,
+        image: selectedImage,
+      });
+    }
   };
 
   const currentPrice = selectedVariant?.price || "0.00";
@@ -191,6 +228,18 @@ export function ProductDetails({ product }: ProductDetailsProps) {
                 </span>
               )}
             </Button>
+
+            {/* Add to Wishlist Button */}
+            <button
+              onClick={handleToggleWishlist}
+              className={`w-14 h-14 flex items-center justify-center rounded-lg border-2 transition-all ${
+                inWishlist 
+                  ? "border-red-500 bg-red-500/10 text-red-500 shadow-[0_0_15px_rgba(239,68,68,0.3)]" 
+                  : "border-neutral-800 bg-neutral-950 text-neutral-400 hover:border-red-500/50 hover:text-red-400"
+              }`}
+            >
+              <Heart className={`w-6 h-6 ${inWishlist ? "fill-current" : ""}`} />
+            </button>
           </div>
         </div>
       </div>

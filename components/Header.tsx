@@ -6,6 +6,10 @@ import { motion, AnimatePresence } from "framer-motion";
 import gsap from "gsap";
 import { TransitionLink } from "@/components/TransitionLink";
 import { Tooltip, TooltipContent, TooltipTrigger, TooltipProvider } from "@/components/animate/tooltip";
+import { useCart } from "@/components/CartContext";
+import { useWishlist } from "@/components/WishlistContext";
+import { CartContent } from "@/components/CartContent";
+import { WishlistContent } from "@/components/WishlistContent";
 
 interface QuickSearchResult {
   id: string;
@@ -17,8 +21,8 @@ interface QuickSearchResult {
 }
 
 export function Header() {
-  const [wishlistCount, setWishlistCount] = useState(0);
-  const [cartCount, setCartCount] = useState(0);
+  const { cartCount, isCartOpen, setIsCartOpen } = useCart();
+  const { wishlistCount, isWishlistOpen, setIsWishlistOpen } = useWishlist();
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState<QuickSearchResult[]>([]);
@@ -93,41 +97,7 @@ export function Header() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // Sync wishlist and cart counts from LocalStorage
-  const updateCounts = () => {
-    if (typeof window === "undefined") return;
-
-    try {
-      const savedWishlist = localStorage.getItem("daddu_wishlist");
-      if (savedWishlist) {
-        setWishlistCount(JSON.parse(savedWishlist).length);
-      } else {
-        setWishlistCount(0);
-      }
-
-      const savedCart = localStorage.getItem("daddu_cart");
-      if (savedCart) {
-        const parsedCart = JSON.parse(savedCart);
-        const count = parsedCart.reduce((acc: number, curr: any) => acc + (curr.quantity || 0), 0);
-        setCartCount(count);
-      } else {
-        setCartCount(0);
-      }
-    } catch (err) {
-      console.error("Failed to read storage counts:", err);
-    }
-  };
-
-  useEffect(() => {
-    updateCounts();
-    // Listen to local updates and cross-tab updates
-    window.addEventListener("daddu_storage_update", updateCounts);
-    window.addEventListener("storage", updateCounts);
-    return () => {
-      window.removeEventListener("daddu_storage_update", updateCounts);
-      window.removeEventListener("storage", updateCounts);
-    };
-  }, []);
+  // Search querying
 
   // Debounced Quick Search
   useEffect(() => {
@@ -211,7 +181,14 @@ export function Header() {
             <Tooltip>
               <TooltipTrigger asChild>
                 <button
-                  onClick={() => setSearchOpen(!searchOpen)}
+                  onClick={() => {
+                    setSearchOpen(!searchOpen);
+                    if (!searchOpen) {
+                      setMobileMenuOpen(false);
+                      setIsCartOpen(false);
+                      setIsWishlistOpen(false);
+                    }
+                  }}
                   className={`p-2 rounded-full hover:bg-white/5 transition-all text-neutral-400 hover:text-white ${
                     searchOpen ? "bg-white/5 text-white" : ""
                   }`}
@@ -232,7 +209,17 @@ export function Header() {
             {/* Wishlist Button */}
             <Tooltip>
               <TooltipTrigger asChild>
-                <button className="p-2 rounded-full hover:bg-white/5 transition-all text-neutral-400 hover:text-white relative">
+                <button 
+                  onClick={() => {
+                    setIsWishlistOpen(!isWishlistOpen);
+                    if (!isWishlistOpen) {
+                      setSearchOpen(false);
+                      setMobileMenuOpen(false);
+                      setIsCartOpen(false);
+                    }
+                  }} 
+                  className="p-2 rounded-full hover:bg-white/5 transition-all text-neutral-400 hover:text-white relative"
+                >
                   <svg className="w-4.5 h-4.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path
                       strokeLinecap="round"
@@ -252,7 +239,17 @@ export function Header() {
             {/* Cart Button */}
             <Tooltip>
               <TooltipTrigger asChild>
-                <button className="p-2 rounded-full hover:bg-white/5 transition-all text-neutral-400 hover:text-white relative">
+                <button 
+                  onClick={() => {
+                    setIsCartOpen(!isCartOpen);
+                    if (!isCartOpen) {
+                      setSearchOpen(false);
+                      setMobileMenuOpen(false);
+                      setIsWishlistOpen(false);
+                    }
+                  }} 
+                  className="p-2 rounded-full hover:bg-white/5 transition-all text-neutral-400 hover:text-white relative"
+                >
                   <svg className="w-4.5 h-4.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path
                       strokeLinecap="round"
@@ -273,7 +270,14 @@ export function Header() {
 
             {/* Mobile Hamburger menu */}
             <button
-              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              onClick={() => {
+                setMobileMenuOpen(!mobileMenuOpen);
+                if (!mobileMenuOpen) {
+                  setSearchOpen(false);
+                  setIsCartOpen(false);
+                  setIsWishlistOpen(false);
+                }
+              }}
               className="p-2 rounded-full hover:bg-white/5 text-neutral-400 hover:text-white md:hidden transition-colors"
             >
               <svg className="w-4.5 h-4.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -384,6 +388,64 @@ export function Header() {
                   </TransitionLink>
                 ))}
               </nav>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+
+      {/* Floating Mobile Cart Dropdown */}
+      <AnimatePresence>
+        {isCartOpen && (
+          <div className="w-full px-6 mt-2 md:hidden">
+            <motion.div
+              initial={{ height: 0, opacity: 0 }}
+              animate={{ height: "auto", opacity: 1 }}
+              exit={{ height: 0, opacity: 0 }}
+              className="bg-neutral-950/95 border border-neutral-800 shadow-2xl rounded-3xl backdrop-blur-xl overflow-hidden relative z-40 max-h-[80vh] flex flex-col"
+            >
+              <div className="flex items-center justify-between p-4 border-b border-neutral-800 shrink-0">
+                <h2 className="text-lg font-bold text-white uppercase tracking-wider">Your Cart</h2>
+                <button
+                  onClick={() => setIsCartOpen(false)}
+                  className="text-neutral-400 hover:text-white"
+                >
+                  <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </div>
+              <div className="flex-1 overflow-hidden px-4 pt-4 flex flex-col min-h-0">
+                <CartContent />
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+
+      {/* Floating Mobile Wishlist Dropdown */}
+      <AnimatePresence>
+        {isWishlistOpen && (
+          <div className="w-full px-6 mt-2 md:hidden">
+            <motion.div
+              initial={{ height: 0, opacity: 0 }}
+              animate={{ height: "auto", opacity: 1 }}
+              exit={{ height: 0, opacity: 0 }}
+              className="bg-neutral-950/95 border border-neutral-800 shadow-2xl rounded-3xl backdrop-blur-xl overflow-hidden relative z-40 max-h-[80vh] flex flex-col"
+            >
+              <div className="flex items-center justify-between p-4 border-b border-neutral-800 shrink-0">
+                <h2 className="text-lg font-bold text-white uppercase tracking-wider">Wishlist</h2>
+                <button
+                  onClick={() => setIsWishlistOpen(false)}
+                  className="text-neutral-400 hover:text-white"
+                >
+                  <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </div>
+              <div className="flex-1 overflow-hidden px-4 pt-4 flex flex-col min-h-0">
+                <WishlistContent />
+              </div>
             </motion.div>
           </div>
         )}

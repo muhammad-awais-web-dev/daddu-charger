@@ -4,7 +4,9 @@ import React, { useState } from "react";
 import Image from "next/image";
 import { TransitionLink } from "./TransitionLink";
 import { Card, CardContent } from "@/components/ui/card";
-import { Star } from "lucide-react";
+import { Star, Heart, ShoppingCart } from "lucide-react";
+import { useCart } from "@/components/CartContext";
+import { useWishlist } from "@/components/WishlistContext";
 
 interface ProductCardProps {
   id: string;
@@ -18,6 +20,7 @@ interface ProductCardProps {
 }
 
 export function ProductCard({
+  id,
   title,
   price,
   image,
@@ -27,6 +30,50 @@ export function ProductCard({
   inStock = true,
 }: ProductCardProps) {
   const [isHovered, setIsHovered] = useState(false);
+  const { addToCart, setIsCartOpen } = useCart();
+  const { addToWishlist, removeFromWishlist, isInWishlist } = useWishlist();
+
+  // Extract handle from href (assuming href is like /products/handle)
+  const handle = href.split('/').pop() || "";
+
+  // The id provided to ProductCard is just a string, but the cart expects a variantId
+  // Since we don't have variants on the card, we just use id as variantId for Quick Add
+  const handleQuickAdd = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (!inStock) return;
+
+    addToCart({
+      variantId: id,
+      productId: id,
+      handle,
+      title,
+      price: price.toString(),
+      image,
+      quantity: 1,
+    });
+    
+    setIsCartOpen(true);
+  };
+
+  const inWishlist = isInWishlist(id);
+
+  const handleToggleWishlist = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    
+    if (inWishlist) {
+      removeFromWishlist(id);
+    } else {
+      addToWishlist({
+        productId: id,
+        handle,
+        title,
+        price: price.toString(),
+        image,
+      });
+    }
+  };
 
   // Formatting currency
   const formatPrice = (val: string | number) => {
@@ -79,6 +126,31 @@ export function ProductCard({
                 Sold Out
               </span>
             )}
+          </div>
+
+          {/* Quick Action Buttons (Visible on Hover) */}
+          <div className="absolute right-4 top-4 z-20 flex flex-col gap-2 transition-all duration-300 translate-x-0 opacity-100 md:translate-x-4 md:opacity-0 md:group-hover:translate-x-0 md:group-hover:opacity-100">
+            <button
+              onClick={handleToggleWishlist}
+              className={`p-2.5 rounded-full shadow-lg backdrop-blur-md border transition-all ${
+                inWishlist 
+                  ? "bg-red-500/20 border-red-500/50 text-red-500" 
+                  : "bg-black/40 border-white/10 text-white hover:bg-black/60 hover:text-red-400 hover:border-red-500/50"
+              }`}
+            >
+              <Heart className={`w-4 h-4 ${inWishlist ? "fill-current" : ""}`} />
+            </button>
+            <button
+              onClick={handleQuickAdd}
+              disabled={!inStock}
+              className={`p-2.5 rounded-full shadow-lg backdrop-blur-md border transition-all ${
+                inStock 
+                  ? "bg-black/40 border-white/10 text-white hover:bg-accent-gold hover:border-accent-gold hover:text-black" 
+                  : "bg-black/40 border-white/10 text-neutral-500 cursor-not-allowed"
+              }`}
+            >
+              <ShoppingCart className="w-4 h-4" />
+            </button>
           </div>
         </div>
 
