@@ -185,14 +185,14 @@ export function ImageTrail({
 
   return (
     <div
-      className={cn("relative overflow-hidden", className)}
+      className={cn("relative overflow-visible", className)}
       onPointerMove={handlePointerMove}
       onPointerLeave={handlePointerLeave}
       {...props}
     >
       {children}
 
-      <div className={cn("pointer-events-none absolute inset-0 z-50 overflow-hidden", overlayClassName)}>
+      <div className={cn("pointer-events-none absolute inset-0 z-50 overflow-visible", overlayClassName)}>
         <AnimatePresence>
           {trail.map((item) => (
             <motion.div

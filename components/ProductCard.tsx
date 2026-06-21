@@ -52,9 +52,7 @@ export function ProductCard({
             alt={title}
             fill
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
-            className={`object-cover object-center transition-transform duration-500 group-hover:scale-105 ${
-              hoverImage && isHovered ? "opacity-0" : "opacity-100"
-            }`}
+            className="object-cover object-center transition-all duration-150 group-hover:scale-105 opacity-100"
           />
 
           {/* Optional Hover Image */}
@@ -64,8 +62,8 @@ export function ProductCard({
               alt={`${title} - Alternate View`}
               fill
               sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
-              className={`object-cover object-center absolute inset-0 transition-all duration-500 group-hover:scale-105 ${
-                isHovered ? "opacity-100 scale-100" : "opacity-0 scale-95"
+              className={`object-cover object-center absolute inset-0 transition-all duration-150 group-hover:scale-105 ${
+                isHovered ? "opacity-100" : "opacity-0"
               }`}
             />
           )}

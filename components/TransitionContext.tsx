@@ -18,7 +18,7 @@ export function TransitionProvider({ children }: { children: React.ReactNode }) 
   const curtainRef = useRef<HTMLDivElement>(null);
   const logoContainerRef = useRef<HTMLDivElement>(null);
   const [loaderText, setLoaderText] = useState("Loading...");
-  const [isTransitioning, setIsTransitioning] = useState(false);
+  const [isTransitioning, setIsTransitioning] = useState(true);
 
   // Transition Intro (stairs slide up from the bottom and grow, then logo appears, then route navigates)
   const startTransition = (href: string, customText?: string) => {
@@ -108,7 +108,7 @@ export function TransitionProvider({ children }: { children: React.ReactNode }) 
       <div
         ref={curtainRef}
         className="fixed inset-0 z-[9999] pointer-events-none block"
-        style={{ transform: "translateY(100%)" }}
+        style={{ transform: "translateY(0%)" }}
       >
         <div className="w-full h-full flex flex-col items-center justify-center gap-4 text-black">
           <div className="stair absolute z-10  top-0 w-full h-1/5 bg-[var(--stair-1)]" ></div>

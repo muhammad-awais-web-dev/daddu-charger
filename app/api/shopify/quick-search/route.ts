@@ -41,6 +41,10 @@ export async function GET(request: NextRequest) {
         vendor: p.vendor || '',
         type: p.product_type || p.type || ''
       }))
+    }, {
+      headers: {
+        'Cache-Control': 'public, s-maxage=3600, stale-while-revalidate=86400',
+      },
     });
   } catch (error: any) {
     console.error('Quick search route error:', error);

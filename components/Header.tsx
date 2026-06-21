@@ -1,8 +1,9 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
+import gsap from "gsap";
 import { TransitionLink } from "@/components/TransitionLink";
 import { Tooltip, TooltipContent, TooltipTrigger, TooltipProvider } from "@/components/animate/tooltip";
 
@@ -24,6 +25,55 @@ export function Header() {
   const [searching, setSearching] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+
+  // GSAP Menu Animation Refs
+  const menuWrapperRef = useRef<HTMLDivElement>(null);
+  const tlRef = useRef<gsap.core.Timeline | null>(null);
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+  // GSAP Setup
+  useEffect(() => {
+    if (!menuWrapperRef.current) return;
+    
+    const items = menuWrapperRef.current.querySelectorAll(".desktop-menu-item");
+    const nav = menuWrapperRef.current.querySelector("nav");
+    
+    tlRef.current = gsap.timeline({ paused: true })
+      .to(menuWrapperRef.current, { 
+        width: () => nav ? nav.scrollWidth : 400, 
+        duration: 0.4, 
+        ease: "power2.out" 
+      })
+      .to(items, { 
+        y: 0, 
+        opacity: 1, 
+        duration: 0.4, 
+        stagger: { amount: 0.3, from: "center" }, 
+        ease: "back.out(1.7)" 
+      }, "-=0.2");
+
+    return () => {
+      tlRef.current?.kill();
+      if (timeoutRef.current) clearTimeout(timeoutRef.current);
+    };
+  }, []);
+
+  const handleMouseEnter = () => {
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+      timeoutRef.current = null;
+    }
+    tlRef.current?.play();
+  };
+
+  const handleMouseLeave = () => {
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+    }
+    timeoutRef.current = setTimeout(() => {
+      tlRef.current?.reverse();
+    }, 1000);
+  };
 
   // Menu Links
   const menuLinks = [
@@ -109,11 +159,21 @@ export function Header() {
       <div className="w-full fixed top-0 inset-x-0 z-50 transition-all duration-300">
       {/* Floating Capsule Container */}
       <div className="w-full px-6 pt-4">
-        <header
-          className={`max-w-5xl mx-auto px-6 bg-neutral-950/80 border border-neutral-800 shadow-2xl backdrop-blur-xl rounded-full flex items-center justify-between transition-all duration-300 ${
-            scrolled ? "py-2.5 max-w-4xl" : "py-4"
-          }`}
+        <div 
+          className="relative p-[2px] rounded-full overflow-hidden group mx-auto w-fit max-w-5xl bg-neutral-800"
+          onMouseEnter={handleMouseEnter}
+          onMouseLeave={handleMouseLeave}
         >
+          {/* Spinning Gradient Border Layer */}
+          <div className="absolute inset-[-1000%] animate-[spin_4s_linear_infinite] group-hover:[animation-play-state:paused] pointer-events-none flex items-center justify-center z-0">
+            <div className="w-full h-full bg-[linear-gradient(0deg,transparent_49.5%,white_50%,transparent_50.5%)] transition-transform duration-500 group-hover:scale-[50]" />
+          </div>
+
+          <header
+            className={`relative z-10 px-6 bg-neutral-950/90 shadow-2xl backdrop-blur-xl rounded-full flex items-center justify-center gap-6 md:gap-12 transition-[padding,background-color] duration-300 ${
+              scrolled ? "py-2.5" : "py-4"
+            }`}
+          >
           {/* Logo Section */}
           <div className="flex items-center gap-2 pl-2">
             <TransitionLink href="/" loaderText="Loading Home...">
@@ -129,18 +189,21 @@ export function Header() {
           </div>
 
           {/* Navigation Links */}
-          <nav className="hidden md:flex items-center gap-1">
-            {menuLinks.map((link) => (
-              <TransitionLink
-                key={link.name}
-                href={link.href}
-                loaderText={`Navigating to ${link.name}...`}
-                className="text-xs font-semibold text-neutral-400 hover:text-accent-gold transition-colors py-1.5 px-3 rounded-lg cursor-pointer"
-              >
-                {link.name}
-              </TransitionLink>
-            ))}
-          </nav>
+          <div ref={menuWrapperRef} className="hidden md:flex overflow-hidden" style={{ width: 0 }}>
+            <nav className="flex items-center gap-1 w-max">
+              {menuLinks.map((link) => (
+                <div key={link.name} className="desktop-menu-item" style={{ transform: "translateY(30px)", opacity: 0 }}>
+                  <TransitionLink
+                    href={link.href}
+                    loaderText={`Navigating to ${link.name}...`}
+                    className="block text-xs font-semibold text-neutral-400 hover:text-accent-gold transition-colors py-1.5 px-3 rounded-lg cursor-pointer"
+                  >
+                    {link.name}
+                  </TransitionLink>
+                </div>
+              ))}
+            </nav>
+          </div>
 
           {/* Action Buttons Section */}
           <div className="flex items-center gap-2 pr-2">
@@ -223,6 +286,7 @@ export function Header() {
             </button>
           </div>
         </header>
+        </div>
       </div>
 
       {/* Floating Search Drawer Component */}

@@ -23,7 +23,11 @@ export async function GET(
       products: productsData.products || []
     };
 
-    return Response.json({ collection });
+    return Response.json({ collection }, {
+      headers: {
+        'Cache-Control': 'public, s-maxage=3600, stale-while-revalidate=86400',
+      },
+    });
   } catch (error: any) {
     console.error(`Error fetching collection ${resolvedHandle || 'unknown'} from Shopify API:`, error);
     return Response.json(
