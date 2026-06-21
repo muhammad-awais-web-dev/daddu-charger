@@ -19,6 +19,7 @@ export const metadata: Metadata = {
 
 import { TransitionProvider } from "@/components/TransitionContext";
 import { Header } from "@/components/Header";
+import { Footer } from "@/components/Footer";
 
 export default function RootLayout({
   children,
@@ -36,6 +37,7 @@ export default function RootLayout({
           <div className="pt-24 flex-1 flex flex-col relative z-10">
             {children}
           </div>
+          <Footer />
         </TransitionProvider>
       </body>
     </html>

@@ -72,6 +72,7 @@ export function TransitionProvider({ children }: { children: React.ReactNode }) 
     const stairs = curtainRef.current.querySelectorAll(".stair");
 
     const tl = gsap.timeline({
+      delay: 0.8, // Add a global delay before starting the outro so animations don't instantly skip
       onComplete: () => {
         // Clean up curtain container position and transition state
         gsap.set(curtainRef.current, { y: "100%" });

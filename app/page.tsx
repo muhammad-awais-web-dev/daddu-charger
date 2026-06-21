@@ -8,6 +8,7 @@ import { ImageTrail } from "@/components/ui/image-trail";
 import { Button } from "@/components/ui/button";
 import { CategoryCarousel } from "@/components/CategoryCarousel";
 import { ProductGrid } from "@/components/ProductGrid";
+import { SocialMediaVideos } from "@/components/SocialMediaVideos";
 
 interface Category {
   name: string;
@@ -162,6 +163,19 @@ export default function Home() {
             <ProductGrid products={featuredProducts} limit={8} />
           </section>
         )}
+
+        {/* Social Media Videos Section */}
+        <section className="space-y-8 pt-8">
+          <div className="flex flex-col items-center text-center space-y-2">
+            <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-white uppercase">
+              Our Social Media Videos
+            </h2>
+            <p className="text-sm sm:text-base text-accent-gold font-semibold tracking-wider uppercase">
+              Tiktok, Insta, Youtube
+            </p>
+          </div>
+          <SocialMediaVideos />
+        </section>
 
         {/* Gaming PC Builds Section */}
         {gamingPcProducts.length > 0 && (

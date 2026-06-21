@@ -40,7 +40,7 @@ export function Header() {
     
     tlRef.current = gsap.timeline({ paused: true })
       .to(menuWrapperRef.current, { 
-        width: () => nav ? nav.scrollWidth : 400, 
+        width: () => nav ? nav.scrollWidth + 16 : 400, 
         duration: 0.4, 
         ease: "power2.out" 
       })
@@ -190,13 +190,13 @@ export function Header() {
 
           {/* Navigation Links */}
           <div ref={menuWrapperRef} className="hidden md:flex overflow-hidden" style={{ width: 0 }}>
-            <nav className="flex items-center gap-1 w-max">
+            <nav className="flex items-center gap-1 w-max pr-2">
               {menuLinks.map((link) => (
                 <div key={link.name} className="desktop-menu-item" style={{ transform: "translateY(30px)", opacity: 0 }}>
                   <TransitionLink
                     href={link.href}
                     loaderText={`Navigating to ${link.name}...`}
-                    className="block text-xs font-semibold text-neutral-400 hover:text-accent-gold transition-colors py-1.5 px-3 rounded-lg cursor-pointer"
+                    className="block whitespace-nowrap text-xs font-semibold text-neutral-400 hover:text-accent-gold transition-colors py-1.5 px-3 rounded-lg cursor-pointer"
                   >
                     {link.name}
                   </TransitionLink>
