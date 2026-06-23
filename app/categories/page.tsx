@@ -96,13 +96,13 @@ export default async function CategoriesPage() {
                 className="group relative overflow-hidden rounded-2xl border border-neutral-800 bg-neutral-900/50 backdrop-blur-sm transition-all duration-300 hover:border-primary/50 hover:shadow-2xl hover:shadow-primary/5"
               >
                 {/* Image */}
-                <div className="relative aspect-[4/3] w-full overflow-hidden bg-neutral-950">
+                <div className="relative aspect-[4/3] w-full overflow-hidden bg-white">
                   <Image
                     src={col.image}
                     alt={col.title}
                     fill
                     sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                    className="object-cover object-center transition-transform duration-500 group-hover:scale-110"
+                    className="object-contain object-center transition-transform duration-500 group-hover:scale-110"
                   />
                   {/* Gradient overlay */}
                   <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
