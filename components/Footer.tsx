@@ -104,7 +104,7 @@ export function Footer() {
                   <Image src="/instagram.svg" alt="Instagram" width={20} height={20} className="invert group-hover:invert-0 transition-all" />
                 </a>
                 <a href="https://twitter.com/" target="_blank" rel="noreferrer" className="w-10 h-10 rounded-full bg-neutral-900 border border-neutral-800 flex items-center justify-center hover:bg-accent-gold transition-colors group">
-                  <Image src="/x_logo.svg" alt="X/Twitter" width={20} height={20} className="invert group-hover:invert-0 transition-all" />
+                  <Image src="/x_logo.svg" alt="X/Twitter" width={20} height={20} style={{ height: 'auto' }} className="invert group-hover:invert-0 transition-all" />
                 </a>
                 <a href="https://www.youtube.com/c/DadduCharger" target="_blank" rel="noreferrer" className="w-10 h-10 rounded-full bg-neutral-900 border border-neutral-800 flex items-center justify-center hover:bg-accent-gold transition-colors group">
                   <Image src="/youtube.svg" alt="YouTube" width={20} height={20} className="invert group-hover:invert-0 transition-all" />
@@ -153,6 +153,7 @@ export function Footer() {
               alt="Daddu Charger Logo" 
               width={140} 
               height={40} 
+              style={{ height: 'auto' }}
               className="object-contain opacity-50 hover:opacity-100 transition-opacity"
             />
           </div>

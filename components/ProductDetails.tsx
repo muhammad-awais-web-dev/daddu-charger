@@ -246,17 +246,44 @@ export function ProductDetails({ product }: ProductDetailsProps) {
     </div>
 
       {/* Description */}
-      {product.body_html && (
-        <div className="mt-8 space-y-4 border-t border-neutral-800 pt-8">
-          <h3 className="text-xl font-bold text-white uppercase tracking-wider pb-2">
-            Description
-          </h3>
-          <div 
-            className="prose prose-invert max-w-none text-neutral-400 prose-headings:text-white prose-a:text-accent-gold hover:prose-a:text-yellow-400 prose-strong:text-white leading-relaxed"
-            dangerouslySetInnerHTML={{ __html: product.body_html }}
-          />
-        </div>
-      )}
+      {(() => {
+        // Strip emojis from the description HTML
+        const stripEmojis = (html: string) =>
+          html.replace(/[\u{1F600}-\u{1F64F}\u{1F300}-\u{1F5FF}\u{1F680}-\u{1F6FF}\u{1F1E0}-\u{1F1FF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}\u{FE00}-\u{FE0F}\u{1F900}-\u{1F9FF}\u{1FA00}-\u{1FA6F}\u{1FA70}-\u{1FAFF}\u{200D}\u{20E3}\u{E0020}-\u{E007F}]/gu, '').replace(/\s{2,}/g, ' ');
+
+        const cleanHtml = product.body_html ? stripEmojis(product.body_html) : '';
+        if (!cleanHtml.trim()) return null;
+
+        return (
+          <div className="mt-12 space-y-6 border-t border-neutral-800 pt-10">
+            <h3 className="text-2xl sm:text-3xl font-extrabold tracking-tight bg-gradient-to-b from-white to-neutral-400 bg-clip-text text-transparent uppercase">
+              Description
+            </h3>
+            <div 
+              className={[
+                "prose prose-invert max-w-none leading-relaxed",
+                // Paragraphs
+                "prose-p:text-neutral-400 prose-p:text-[15px] prose-p:leading-relaxed prose-p:mb-4",
+                // Headings — gradient style matching the product title
+                "[&_h2]:text-xl [&_h2]:sm:text-2xl [&_h2]:font-extrabold [&_h2]:tracking-tight [&_h2]:bg-gradient-to-b [&_h2]:from-white [&_h2]:to-neutral-400 [&_h2]:bg-clip-text [&_h2]:text-transparent [&_h2]:uppercase [&_h2]:mt-10 [&_h2]:mb-4",
+                "[&_h3]:text-lg [&_h3]:sm:text-xl [&_h3]:font-bold [&_h3]:tracking-tight [&_h3]:text-white [&_h3]:uppercase [&_h3]:mt-8 [&_h3]:mb-3",
+                // Strong / bold
+                "prose-strong:text-white prose-strong:font-bold",
+                // Links
+                "prose-a:text-accent-gold hover:prose-a:text-yellow-400 prose-a:transition-colors prose-a:no-underline hover:prose-a:underline",
+                // Lists
+                "[&_ul]:space-y-2 [&_ul]:my-4 [&_ul]:pl-0 [&_ul]:list-none",
+                "[&_ul>li]:relative [&_ul>li]:pl-6 [&_ul>li]:text-neutral-400 [&_ul>li]:text-[15px]",
+                "[&_ul>li]:before:content-[''] [&_ul>li]:before:absolute [&_ul>li]:before:left-0 [&_ul>li]:before:top-[10px] [&_ul>li]:before:w-2 [&_ul>li]:before:h-2 [&_ul>li]:before:bg-accent-gold/60 [&_ul>li]:before:rounded-full",
+                "[&_ul>li>p]:mb-0",
+                // Horizontal rules — subtle gold accent
+                "[&_hr]:border-neutral-800 [&_hr]:my-8 [&_hr]:border-t [&_hr]:border-b-0",
+              ].join(" ")}
+              dangerouslySetInnerHTML={{ __html: cleanHtml }}
+            />
+          </div>
+        );
+      })()}
     </div>
   );
 }

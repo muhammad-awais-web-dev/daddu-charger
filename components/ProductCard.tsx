@@ -128,28 +128,17 @@ export function ProductCard({
             )}
           </div>
 
-          {/* Quick Action Buttons (Visible on Hover) */}
-          <div className="absolute right-4 top-4 z-20 flex flex-col gap-2 transition-all duration-300 translate-x-0 opacity-100 md:translate-x-4 md:opacity-0 md:group-hover:translate-x-0 md:group-hover:opacity-100">
+          {/* Wishlist Button (Always Visible) */}
+          <div className="absolute right-4 top-4 z-20">
             <button
               onClick={handleToggleWishlist}
-              className={`p-2.5 rounded-full shadow-lg backdrop-blur-md border transition-all ${
+              className={`cursor-pointer p-2.5 rounded-full shadow-lg backdrop-blur-md border transition-all ${
                 inWishlist 
-                  ? "bg-red-500/20 border-red-500/50 text-red-500" 
-                  : "bg-black/40 border-white/10 text-white hover:bg-black/60 hover:text-red-400 hover:border-red-500/50"
+                  ? "bg-red-500/20 border-red-500/50 text-red-500 hover:bg-red-500/30" 
+                  : "bg-black/80 border-white/20 text-white hover:bg-black hover:text-red-400 hover:border-red-500/50"
               }`}
             >
               <Heart className={`w-4 h-4 ${inWishlist ? "fill-current" : ""}`} />
-            </button>
-            <button
-              onClick={handleQuickAdd}
-              disabled={!inStock}
-              className={`p-2.5 rounded-full shadow-lg backdrop-blur-md border transition-all ${
-                inStock 
-                  ? "bg-black/40 border-white/10 text-white hover:bg-accent-gold hover:border-accent-gold hover:text-black" 
-                  : "bg-black/40 border-white/10 text-neutral-500 cursor-not-allowed"
-              }`}
-            >
-              <ShoppingCart className="w-4 h-4" />
             </button>
           </div>
         </div>
@@ -175,9 +164,23 @@ export function ProductCard({
             {title}
           </h4>
 
-          {/* Price */}
-          <div className="text-base sm:text-lg font-extrabold text-white">
-            {formatPrice(price)}
+          {/* Price & Add to Cart */}
+          <div className="space-y-3 mt-1">
+            <div className="text-base sm:text-lg font-extrabold text-white">
+              {formatPrice(price)}
+            </div>
+            <button
+              onClick={handleQuickAdd}
+              disabled={!inStock}
+              className={`w-full py-2.5 rounded-xl font-bold text-xs uppercase tracking-wider transition-all flex items-center justify-center gap-2 ${
+                inStock 
+                  ? "bg-white/10 text-white hover:bg-accent-gold hover:text-black border border-white/10 hover:border-accent-gold shadow-lg cursor-pointer" 
+                  : "bg-black/40 text-neutral-500 border border-white/5 cursor-not-allowed"
+              }`}
+            >
+              <ShoppingCart className="w-4 h-4" />
+              {inStock ? "Add to Cart" : "Sold Out"}
+            </button>
           </div>
         </CardContent>
       </Card>

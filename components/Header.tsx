@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useRef } from "react";
+import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import gsap from "gsap";
@@ -21,6 +22,7 @@ interface QuickSearchResult {
 }
 
 export function Header() {
+  const router = useRouter();
   const { cartCount, isCartOpen, setIsCartOpen } = useCart();
   const { wishlistCount, isWishlistOpen, setIsWishlistOpen } = useWishlist();
   const [searchOpen, setSearchOpen] = useState(false);
@@ -152,6 +154,7 @@ export function Header() {
                 alt="Daddu Charger Logo"
                 width={120}
                 height={32}
+                style={{ height: 'auto' }}
                 className="object-contain cursor-pointer"
                 priority
               />
@@ -313,6 +316,13 @@ export function Header() {
                     type="text"
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter" && searchQuery.trim()) {
+                        setSearchOpen(false);
+                        router.push(`/search?q=${encodeURIComponent(searchQuery.trim())}`);
+                        setSearchQuery("");
+                      }
+                    }}
                     placeholder="Type to search products..."
                     className="flex-1 bg-transparent border-none outline-none text-sm text-white placeholder-neutral-500"
                     autoFocus
@@ -331,34 +341,50 @@ export function Header() {
 
                 {/* Suggestions Grid */}
                 {searchQuery.trim() !== "" && (
-                  <div className="space-y-2 max-h-60 overflow-y-auto pr-2 scrollbar-thin">
-                    {searchResults.length === 0 && !searching ? (
-                      <p className="text-xs text-neutral-500 px-1 py-2">No products found matching your search.</p>
-                    ) : (
-                      searchResults.map((product) => (
-                        <TransitionLink
-                          key={product.id}
-                          href={product.url || `/products/${product.handle}`}
-                          loaderText={`Loading ${product.title}...`}
-                          className="flex items-center justify-between p-2 rounded-xl hover:bg-white/5 transition-colors cursor-pointer"
-                        >
-                          <div className="flex items-center gap-3">
-                            <div className="w-18 h-18 rounded-xl bg-neutral-900 border border-neutral-800 flex items-center justify-center overflow-hidden flex-shrink-0">
-                              <Image
-                                src={product.image || "/DadduCharger.svg"}
-                                alt={product.title}
-                                width={52}
-                                height={52}
-                                className="opacity-80 object-contain"
-                              />
+                  <>
+                    <div className="space-y-2 max-h-60 overflow-y-auto pr-2 scrollbar-thin">
+                      {searchResults.length === 0 && !searching ? (
+                        <p className="text-xs text-neutral-500 px-1 py-2">No products found matching your search.</p>
+                      ) : (
+                        searchResults.map((product) => (
+                          <TransitionLink
+                            key={product.id}
+                            href={product.url || `/products/${product.handle}`}
+                            loaderText={`Loading ${product.title}...`}
+                            className="flex items-center justify-between p-2 rounded-xl hover:bg-white/5 transition-colors cursor-pointer"
+                          >
+                            <div className="flex items-center gap-3">
+                              <div className="w-18 h-18 rounded-xl bg-neutral-900 border border-neutral-800 flex items-center justify-center overflow-hidden flex-shrink-0">
+                                <Image
+                                  src={product.image || "/DadduCharger.svg"}
+                                  alt={product.title}
+                                  width={52}
+                                  height={52}
+                                  className="opacity-80 object-contain"
+                                />
+                              </div>
+                              <span className="text-xs font-semibold text-white">{product.title}</span>
                             </div>
-                            <span className="text-xs font-semibold text-white">{product.title}</span>
-                          </div>
-                          <span className="text-xs text-neutral-400">Rs. {Number(product.price).toLocaleString()}</span>
-                        </TransitionLink>
-                      ))
+                            <span className="text-xs text-neutral-400">Rs. {Number(product.price).toLocaleString()}</span>
+                          </TransitionLink>
+                        ))
+                      )}
+                    </div>
+
+                    {/* View All Results Link */}
+                    {searchResults.length > 0 && (
+                      <button
+                        onClick={() => {
+                          setSearchOpen(false);
+                          router.push(`/search?q=${encodeURIComponent(searchQuery.trim())}`);
+                          setSearchQuery("");
+                        }}
+                        className="w-full py-3 text-center text-sm font-bold text-accent-gold hover:text-yellow-400 transition-colors uppercase tracking-wider cursor-pointer"
+                      >
+                        View all results &rarr;
+                      </button>
                     )}
-                  </div>
+                  </>
                 )}
               </div>
             </motion.div>
